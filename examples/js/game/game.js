@@ -147,39 +147,45 @@ async function* generatorProcess(sumbols) {
     sumbols.forEach((row) => {
         row.skip();
     });
-    yield " -- end " + currentProcess;
+    yield currentProcess;
     //-----------------------------------------------------
 
     currentProcess = "lines";
     console.log(currentProcess);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+ 
     sumbols[0].result();
     sumbols[1].result();
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    sumbols[3].result();
-    sumbols[4].result();
-    sumbols[5].result();
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    if (currentProcess != "end") {
+        sumbols[3].result();
+        sumbols[4].result();
+        sumbols[5].result();
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
     sumbols[0].skip();
     sumbols[1].skip();
  
     sumbols[3].skip();
     sumbols[4].skip();
     sumbols[5].skip();
-    yield " -- end " + currentProcess;
+    yield  currentProcess;
     //-----------------------------------------------------
 
     currentProcess = "sumbols";
     console.log(currentProcess);
     for (let i = 0; i < sumbols.length; i++) {
-        sumbols[i].result();
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        sumbols[i].skip();
+        if (currentProcess != "end") {
+            sumbols[i].result();
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            sumbols[i].skip();
+        }
     }
-    yield " -- end " + currentProcess;
+    yield  currentProcess;
     //-----------------------------------------------------
     currentProcess = "end";
     console.log("END generatorProcess");
+    yield  currentProcess;
+ 
 }
 
 function onAssetsLoaded(loader, res) {
@@ -196,20 +202,15 @@ function onAssetsLoaded(loader, res) {
     app.stage.on("pointertap", async () => {
  
         if (currentProcess === "end") {
-   
             generator = generatorProcess(sumbols);
             for await (var itItem of generator) {
-             
             }
-        }else {
-            if (typeof generator === 'object' ) {
-                generator.return('skip');
-                generator = null;
-                sumbols.forEach((row) => {
-                    row.skip();
-                });
-                currentProcess = "end";
-            }
+        } else {
+            sumbols.forEach((row) => {
+                row.skip();
+            });
+            generator.return(currentProcess);
+            currentProcess = "end";
         } 
         //  for (var i = app.stage.children.length - 1; i >= 0; i--) {app.stage.removeChild(app.stage.children[i]);};
 
