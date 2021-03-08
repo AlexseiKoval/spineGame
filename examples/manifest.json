@@ -1,0 +1,11 @@
+{
+    "game": [
+        {
+            "title": "game",
+            "entry": "game.js",
+            "plugins": [
+                "pixi-spine"
+            ]
+        }
+    ]
+}
