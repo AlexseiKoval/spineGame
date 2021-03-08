@@ -160,7 +160,12 @@ async function* generatorProcess(sumbols) {
     sumbols[4].result();
     sumbols[5].result();
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
+    sumbols[0].skip();
+    sumbols[1].skip();
+ 
+    sumbols[3].skip();
+    sumbols[4].skip();
+    sumbols[5].skip();
     yield " -- end " + currentProcess;
     //-----------------------------------------------------
 
